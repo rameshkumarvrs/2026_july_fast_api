@@ -23,3 +23,10 @@ def get_emp(id:int):
         if e["id"] == id:
             return e
 
+@app.get("/employee")
+def get_emp_det(id:int):
+    for e in emp:
+        if e['id'] == id:
+            return e
+
+
