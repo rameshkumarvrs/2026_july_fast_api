@@ -1,5 +1,13 @@
 from fastapi import FastAPI
 
+from pydantic import BaseModel
+
+
+class items(BaseModel):
+    name : str
+    price : float
+    availablity : bool 
+
 app = FastAPI()
 
 emp = [
@@ -7,6 +15,10 @@ emp = [
      {"name": 'Haran', "id": 102, 'place': "Newzeland"},
       {"name": 'Riya', "id": 103, 'place': "karur"}
 ]
+
+@app.post("/items")
+def create_items(data : items):
+    return {"messges": "items added successfully", "data": data}
 
 
 @app.get("/display")
