@@ -3,11 +3,16 @@ from fastapi import FastAPI
 from pydantic import BaseModel, Field
 from typing import Optional
 
+class manf(BaseModel):
+    name : str
+    year : int
+
 
 class items(BaseModel):
     name : str = Field(min_length = 2, max_length = 100)
     price : float
     availablity : Optional[bool] = None 
+    manufacturer : manf
 
 app = FastAPI()
 
