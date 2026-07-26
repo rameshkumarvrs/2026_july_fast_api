@@ -1,11 +1,11 @@
 from fastapi import FastAPI
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 
 
 class items(BaseModel):
-    name : str
+    name : str = Field(min_length = 2, max_length = 100)
     price : float
     availablity : Optional[bool] = None 
 
