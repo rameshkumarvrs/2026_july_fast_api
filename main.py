@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Form, File, UploadFile, HTTPException
+from fastapi import FastAPI, Form, File, UploadFile, HTTPException, Response,Cookie
 
 from pydantic import BaseModel, Field
 from typing import Optional
@@ -81,12 +81,22 @@ copwd = "password"
 sessions ={}
 
 @app.post("/login")
-def login(uname: str, pwd: str):
+def login(uname: str, pwd: str, res: Response):
     if couname == uname and copwd == pwd:
-       sid = uuid.uuid4()
-       return {"sid": sid}
+       sid = str(uuid.uuid4())
+       sessions[sid] = {"username": uname}
+       res.set_cookie(key="sid", value=sid, httponly=True)
+       return {"msg": "login success", "sessions": sessions}
 
     else:
         raise HTTPException(status_code=404, detail= "Invalid credentials")
+
+
+@app.get("/home/")
+def home(sid :Optional[str]=Cookie(None)):
+    if sid is None or sid not in sessions:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
+    return {"user":sessions[sid]} 
 
 
