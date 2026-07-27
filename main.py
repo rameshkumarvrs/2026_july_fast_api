@@ -1,7 +1,8 @@
-from fastapi import FastAPI, Form, File, UploadFile
+from fastapi import FastAPI, Form, File, UploadFile, HTTPException
 
 from pydantic import BaseModel, Field
 from typing import Optional
+import uuid
 
 class manf(BaseModel):
     name : str
@@ -72,5 +73,20 @@ async def get_file_details(file : UploadFile=File(...)):
          "content-type": file.content_type,
          "Text": text_p
      }  
+
+
+couname = "admin"
+copwd = "password"
+
+sessions ={}
+
+@app.post("/login")
+def login(uname: str, pwd: str):
+    if couname == uname and copwd == pwd:
+       sid = uuid.uuid4()
+       return {"sid": sid}
+
+    else:
+        raise HTTPException(status_code=404, detail= "Invalid credentials")
 
 
