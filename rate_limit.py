@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Depends
 
 app = FastAPI()
 
@@ -19,3 +19,12 @@ def get_data(request : Request):
         raise HTTPException(status_code=500, detail="Rate limit exceeds")
 
     return {"Message": f"request{rate_limit[client_ip]} is successfull"}
+
+
+def get_db():
+    return {"message": "db retrived"}
+
+@app.get("/datacenter")
+def get_datas(a :dict = Depends(get_db)):
+    return {"message": "Dependency data recived", "db_status": a}
+
