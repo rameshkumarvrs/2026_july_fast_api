@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Form
+from fastapi import FastAPI, Form, File, UploadFile
 
 from pydantic import BaseModel, Field
 from typing import Optional
@@ -56,6 +56,21 @@ def get_feedback(name : str= Form(...), rating : int=Form(...), email: str = For
         "email": email,
         "rating": rating
 
-    }        
+    }   
+
+
+@app.post("/file_upload/")
+async def get_file_details(file : UploadFile=File(...)):
+    content = await file.read()
+    try:
+        text_p = content.decode("utf-8")[:200]
+    except:
+        text_p = "unable to read the content"
+
+    return {
+         "filename": file.filename,
+         "content-type": file.content_type,
+         "Text": text_p
+     }  
 
 
