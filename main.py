@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Form
 
 from pydantic import BaseModel, Field
 from typing import Optional
@@ -46,5 +46,16 @@ def get_emp_det(id:int):
     for e in emp:
         if e['id'] == id:
             return e
+
+
+@app.post("/feedback/")
+def get_feedback(name : str= Form(...), rating : int=Form(...), email: str = Form(...)):
+    return {
+        "status" : "form submited succesfully",
+        "name": name,
+        "email": email,
+        "rating": rating
+
+    }        
 
 
