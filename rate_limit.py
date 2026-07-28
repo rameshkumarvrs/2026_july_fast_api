@@ -55,6 +55,17 @@ def get_all_items():
     except Exception as e:
             return HTTPException(status_code=500, detail=f"Unable to fetch the data.. {e}")
 
+@app.get("/items/get_one/{name}")
+def get_one(name:str):
+     try:
+          cursor.execute("select * from items where name = ?", (name,)) 
+          row = cursor.fetchone()
+          if row is None:
+               raise HTTPException(status_code=401, detail="Item not found")
+          return {"id": row[0], "name": row[1], "description": row[2]}
+     except Exception as e:
+             return HTTPException(status_code=500, detail=f"Unable to fetch the single data.. {e}")
+
 
 
 # app = FastAPI()
