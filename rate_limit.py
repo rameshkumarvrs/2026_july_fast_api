@@ -76,6 +76,15 @@ def update_item(item_id: int, i:Item):
     except Exception as e:
             return HTTPException(status_code=500, detail=f"Unable to update the data.. {e}")
 
+@app.delete("/items/delete/{name}")
+def delete_items(name: str):
+    try:
+         cursor.execute("Delete from items where name =?", (name,))
+         conn.commit()
+         return {"messages": "items deleted successfully"} 
+    except Exception as e:
+            return HTTPException(status_code=500, detail=f"Unable to Delete the data.. {e}")
+
 # app = FastAPI()
 
 
