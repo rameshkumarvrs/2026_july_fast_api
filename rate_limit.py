@@ -1,5 +1,7 @@
 from fastapi import FastAPI, HTTPException, Request, Depends
 
+from pydantic import BaseModel
+
 import sqlite3
 
 
@@ -9,17 +11,35 @@ conn = sqlite3.connect("test.db", check_same_thread=False)
 
 cursor = conn.cursor()
 
-cursor.execute('''
+# cursor.execute('''
 
-  create table if not exists items(
+#   create table if not exists items(
   
-  item_id integer auto increment primary key,
-  name text not null,
-  item_description text
+#   item_id integer auto increment primary key,
+#   name text not null,
+#   item_description text
   
-  )
+#   )
 
-''')
+# ''')
+
+# conn.commit()
+
+class Item(BaseModel):
+    name: str
+    item_description: str
+
+
+
+@app.post("/items/create/")
+def create_item(i: Item):
+    try:
+        cursor.execute("Insert into items(name, item_description) values(?,?)", (i.name, i.item_description))
+
+        conn.commit()
+        return {"message": "Items stored successfully"}
+    except Exception as e:
+        return HTTPException(status_code=500, detail=f"Unable to insert.. {e}")
 
 
 
