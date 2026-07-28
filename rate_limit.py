@@ -113,3 +113,7 @@ def delete_items(name: str):
 # def get_datas(a :dict = Depends(get_db)):
 #     return {"message": "Dependency data recived", "db_status": a}
 
+
+@app.get("/greet/{name}")
+def greet_name(name: str, age:int):
+     return {"message": f"Hello {name}", "age": age}
