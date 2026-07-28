@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, Request, Depends
 
 from pydantic import BaseModel
+from typing import Optional
 
 import sqlite3
 
@@ -114,6 +115,6 @@ def delete_items(name: str):
 #     return {"message": "Dependency data recived", "db_status": a}
 
 
-@app.get("/greet/{name}")
-def greet_name(name: str, age:int):
+@app.get("/greet")
+def greet_name(name: Optional[str]= "Ochaye", age:int=0):
      return {"message": f"Hello {name}", "age": age}
