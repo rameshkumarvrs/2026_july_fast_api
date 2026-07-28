@@ -66,7 +66,15 @@ def get_one(name:str):
      except Exception as e:
              return HTTPException(status_code=500, detail=f"Unable to fetch the single data.. {e}")
 
-
+@app.put("/items/update/{item_id}")
+def update_item(item_id: int, i:Item):
+    try:
+          cursor.execute("update items set name =?, item_description = ? where item_id = ?", (i.name, i.item_description, item_id))
+          conn.commit()
+          return {"message": "Items update succesfully"}
+     
+    except Exception as e:
+            return HTTPException(status_code=500, detail=f"Unable to update the data.. {e}")
 
 # app = FastAPI()
 
