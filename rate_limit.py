@@ -11,13 +11,15 @@ conn = sqlite3.connect("test.db", check_same_thread=False)
 
 cursor = conn.cursor()
 
+# cursor.execute("DROP TABLE IF EXISTS items")
+
 # cursor.execute('''
 
 #   create table if not exists items(
   
-#   item_id integer auto increment primary key,
-#   name text not null,
-#   item_description text
+#   item_id INTEGER PRIMARY KEY AUTOINCREMENT,
+#   name TEXT NOT NULL,
+#   item_description TEXT
   
 #   )
 
@@ -37,11 +39,21 @@ def create_item(i: Item):
         cursor.execute("Insert into items(name, item_description) values(?,?)", (i.name, i.item_description))
 
         conn.commit()
-        return {"message": "Items stored successfully"}
+        return {"message": "Items stored successfully", "item": i}
     except Exception as e:
         return HTTPException(status_code=500, detail=f"Unable to insert.. {e}")
 
 
+@app.get("/items/")
+def get_all_items():
+    try:
+        cursor.execute("select * from items")
+        rows = cursor.fetchall()
+        conn.commit()
+        return [{"id": r[0], "name": r[1], "description": r[2]} for r in rows] 
+
+    except Exception as e:
+            return HTTPException(status_code=500, detail=f"Unable to fetch the data.. {e}")
 
 
 
