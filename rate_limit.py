@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Request, Depends
+from fastapi import FastAPI, HTTPException, Request, Depends, Header
 
 from pydantic import BaseModel
 from typing import Optional
@@ -118,3 +118,26 @@ def delete_items(name: str):
 @app.get("/greet")
 def greet_name(name: Optional[str]= "Ochaye", age:int=0):
      return {"message": f"Hello {name}", "age": age}
+
+
+class BookModel(BaseModel):
+     title : str
+     author : str
+
+
+@app.post("/create_book")
+def create_book(book: BookModel):
+    return {
+         "title": book.title,
+         "author": book.author}
+
+
+@app.get("/get_headers")
+def get_headers(
+     accept:str = Header(None),
+     user_agent: str = Header(None)
+):         
+    request_header = {}
+    request_header["Accept"] = accept
+    request_header["User_Agent"] = user_agent
+    return request_header
