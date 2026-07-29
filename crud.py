@@ -54,6 +54,10 @@ class BookModel(BaseModel):
     author: str
     release_year : int
 
+class BookResponseModel(BaseModel):
+    name: str
+    author: str    
+
 
 @app.get("/get_all_books")
 def get_all_books():
@@ -72,3 +76,13 @@ def get_book(id:int):
             return {"book": book}
 
     raise HTTPException(status_code = 400, detail="unable to create the book")
+
+@app.patch("/update_book/{id}")
+def update(id: int, book_model: BookResponseModel):
+    for book in books:
+        if book["id"] == id:
+            book["name"] = book_model.name
+            book["author"] = book_model.author
+            return {"book" : book}
+        
+    raise HTTPException(status_code = 400, detail="unable to update the book")
