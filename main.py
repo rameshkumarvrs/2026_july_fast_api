@@ -4,99 +4,102 @@ from pydantic import BaseModel, Field
 from typing import Optional
 import uuid
 
-class manf(BaseModel):
-    name : str
-    year : int
+from src.books.book_data import books
+from src.books.schemas import BookModel, BookResponseModel
+
+# class manf(BaseModel):
+#     name : str
+#     year : int
 
 
-class items(BaseModel):
-    name : str = Field(min_length = 2, max_length = 100)
-    price : float
-    availablity : Optional[bool] = None 
-    manufacturer : manf
+# class items(BaseModel):
+#     name : str = Field(min_length = 2, max_length = 100)
+#     price : float
+#     availablity : Optional[bool] = None 
+#     manufacturer : manf
 
-app = FastAPI()
+# app = FastAPI()
 
-emp = [
-    {"name": 'ramesh', "id": 101, 'place': "Namakkal"},
-     {"name": 'Haran', "id": 102, 'place': "Newzeland"},
-      {"name": 'Riya', "id": 103, 'place': "karur"}
-]
+# emp = [
+#     {"name": 'ramesh', "id": 101, 'place': "Namakkal"},
+#      {"name": 'Haran', "id": 102, 'place': "Newzeland"},
+#       {"name": 'Riya', "id": 103, 'place': "karur"}
+# ]
 
-@app.post("/items")
-def create_items(data : items):
-    return {"messges": "items added successfully", "data": data}
-
-
-@app.get("/display")
-def view():
-    return "Hello Rameshkumar"
-
-@app.get("/display/{id}")
-def display_id(id: int):
-    return {"message": id}
-
-@app.get("/employee/{id}")
-def get_emp(id:int):
-    for e in emp:
-        if e["id"] == id:
-            return e
-
-@app.get("/employee")
-def get_emp_det(id:int):
-    for e in emp:
-        if e['id'] == id:
-            return e
+# @app.post("/items")
+# def create_items(data : items):
+#     return {"messges": "items added successfully", "data": data}
 
 
-@app.post("/feedback/")
-def get_feedback(name : str= Form(...), rating : int=Form(...), email: str = Form(...)):
-    return {
-        "status" : "form submited succesfully",
-        "name": name,
-        "email": email,
-        "rating": rating
+# @app.get("/display")
+# def view():
+#     return "Hello Rameshkumar"
 
-    }   
+# @app.get("/display/{id}")
+# def display_id(id: int):
+#     return {"message": id}
 
+# @app.get("/employee/{id}")
+# def get_emp(id:int):
+#     for e in emp:
+#         if e["id"] == id:
+#             return e
 
-@app.post("/file_upload/")
-async def get_file_details(file : UploadFile=File(...)):
-    content = await file.read()
-    try:
-        text_p = content.decode("utf-8")[:200]
-    except:
-        text_p = "unable to read the content"
-
-    return {
-         "filename": file.filename,
-         "content-type": file.content_type,
-         "Text": text_p
-     }  
+# @app.get("/employee")
+# def get_emp_det(id:int):
+#     for e in emp:
+#         if e['id'] == id:
+#             return e
 
 
-couname = "admin"
-copwd = "password"
+# @app.post("/feedback/")
+# def get_feedback(name : str= Form(...), rating : int=Form(...), email: str = Form(...)):
+#     return {
+#         "status" : "form submited succesfully",
+#         "name": name,
+#         "email": email,
+#         "rating": rating
 
-sessions ={}
-
-@app.post("/login")
-def login(uname: str, pwd: str, res: Response):
-    if couname == uname and copwd == pwd:
-       sid = str(uuid.uuid4())
-       sessions[sid] = {"username": uname}
-       res.set_cookie(key="sid", value=sid, httponly=True)
-       return {"msg": "login success", "sessions": sessions}
-
-    else:
-        raise HTTPException(status_code=404, detail= "Invalid credentials")
+#     }   
 
 
-@app.get("/home/")
-def home(sid :Optional[str]=Cookie(None)):
-    if sid is None or sid not in sessions:
-        raise HTTPException(status_code=401, detail="Not authenticated")
+# @app.post("/file_upload/")
+# async def get_file_details(file : UploadFile=File(...)):
+#     content = await file.read()
+#     try:
+#         text_p = content.decode("utf-8")[:200]
+#     except:
+#         text_p = "unable to read the content"
 
-    return {"user":sessions[sid]} 
+#     return {
+#          "filename": file.filename,
+#          "content-type": file.content_type,
+#          "Text": text_p
+#      }  
+
+
+# couname = "admin"
+# copwd = "password"
+
+# sessions ={}
+
+# @app.post("/login")
+# def login(uname: str, pwd: str, res: Response):
+#     if couname == uname and copwd == pwd:
+#        sid = str(uuid.uuid4())
+#        sessions[sid] = {"username": uname}
+#        res.set_cookie(key="sid", value=sid, httponly=True)
+#        return {"msg": "login success", "sessions": sessions}
+
+#     else:
+#         raise HTTPException(status_code=404, detail= "Invalid credentials")
+
+
+# @app.get("/home/")
+# def home(sid :Optional[str]=Cookie(None)):
+#     if sid is None or sid not in sessions:
+#         raise HTTPException(status_code=401, detail="Not authenticated")
+
+#     return {"user":sessions[sid]} 
 
 
