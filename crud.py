@@ -12,42 +12,63 @@ books = [
         "release year" : 1901
     },
     {
-            "id" : 1,
-            "name": "Secret of piviot bosss",
-            "author": "franck ochava",
-            "release year" : 1901
+        "id" : 2,
+        "name": "Secret of piviot bosss",
+        "author": "franck ochava",
+        "release_year" : 1901
         },
 
     {
-            "id" : 2,
-            "name": "Eat the Frog",
-            "author": "Brain Tracy",
-            "release year" : 1958
+        "id" : 3,
+        "name": "Eat the Frog",
+        "author": "Brain Tracy",
+         "release_year" : 1958
         },
 
     {
-            "id" : 3,
-            "name": "Inteligent Investors",
-            "author": "Jd avans",
-            "release year" : 1951
+        "id" : 4,
+        "name": "Inteligent Investors",
+        "author": "Jd avans",
+        "release_year" : 1951
         },
 
     {
-            "id" : 4,
-            "name": "Atomic habit",
-            "author": "Lousiana",
-            "release year" : 1985
+        "id" : 5,
+        "name": "Atomic habit",
+        "author": "Lousiana",
+        "release_year" : 1985
         },
 
     {
-            "id" : 5,
-            "name": "Think and grow rich",
-            "author": "Nepolean hill",
-            "release year" : 2001
+        "id" : 6,
+        "name": "Think and grow rich",
+        "author": "Nepolean hill",
+        "release_year" : 2001
         },                
 ]
+
+
+class BookModel(BaseModel):
+    id: int
+    name: str
+    author: str
+    release_year : int
 
 
 @app.get("/get_all_books")
 def get_all_books():
     return {"books": books}
+
+@app.post("/create_book", status_code=200)
+def create_book(book: BookModel):
+    new_book = book
+    books.append(new_book)
+    return {"message": "Book created successfully", "book": new_book}
+
+@app.get("/get_one_book/{id}")
+def get_book(id:int):
+    for book in books:
+        if book['id'] == id:
+            return {"book": book}
+
+    raise HTTPException(status_code = 400, detail="unable to create the book")
