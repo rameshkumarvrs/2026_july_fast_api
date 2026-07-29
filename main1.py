@@ -1,11 +1,6 @@
 from fastapi import FastAPI, Form, File, UploadFile, HTTPException, Response,Cookie
 
-from pydantic import BaseModel, Field
-from typing import Optional
-import uuid
-
-from src.books.book_data import books
-from src.books.schemas import BookModel, BookResponseModel
+app =FastAPI()
 
 # class manf(BaseModel):
 #     name : str
