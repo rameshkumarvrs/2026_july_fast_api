@@ -86,3 +86,13 @@ def update(id: int, book_model: BookResponseModel):
             return {"book" : book}
         
     raise HTTPException(status_code = 400, detail="unable to update the book")
+
+@app.delete("/remove_book/{id}")
+def remove_book(id:int):
+    for book in books:
+        if book['id'] == id:
+            books.remove(book)
+            return {"message": "Books deleted succesfully"}
+    raise HTTPException(status_code = 400, detail="unable to delete the book")
+
+
