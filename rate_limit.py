@@ -3,6 +3,8 @@ from fastapi import FastAPI, HTTPException, Request, Depends, Header
 from pydantic import BaseModel
 from typing import Optional
 
+from fastapi.responses import HTMLResponse
+
 import sqlite3
 
 
@@ -141,3 +143,9 @@ def get_headers(
     request_header["Accept"] = accept
     request_header["User_Agent"] = user_agent
     return request_header
+
+
+
+@app.get("/posts", response_class=HTMLResponse)
+def get_posts():
+     return f"<h1>hellow world</h1>"
