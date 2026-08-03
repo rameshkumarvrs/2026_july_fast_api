@@ -146,6 +146,7 @@ def get_headers(
 
 
 
+@app.get("/", response_class=HTMLResponse)
 @app.get("/posts", response_class=HTMLResponse)
 def get_posts():
      return f"<h1>hellow world</h1>"

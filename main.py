@@ -1,4 +1,6 @@
 from fastapi import FastAPI, Form, File, UploadFile, HTTPException, Response,Cookie
+from fastapi import Request
+from fastapi.templating import Jinja2Templates
 
 app =FastAPI()
 
