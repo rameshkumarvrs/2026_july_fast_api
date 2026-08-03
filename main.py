@@ -149,6 +149,6 @@ posts = [
 @app.get("/" )
 @app.get("/posts")
 def home(request: Request):
-     return templates.TemplateResponse(request, "home.html", {"posts": posts})
+     return templates.TemplateResponse(request, "home.html", {"posts": posts, "title": "Home"},)
 
 
