@@ -4,6 +4,8 @@ from fastapi.templating import Jinja2Templates
 
 app =FastAPI()
 
+templates = Jinja2Templates(directory="templates")
+
 # class manf(BaseModel):
 #     name : str
 #     year : int
@@ -98,5 +100,11 @@ app =FastAPI()
 #         raise HTTPException(status_code=401, detail="Not authenticated")
 
 #     return {"user":sessions[sid]} 
+
+
+@app.get("/" )
+@app.get("/posts")
+def home(request: Request):
+     return templates.TemplateResponse(request, "home.html")
 
 
