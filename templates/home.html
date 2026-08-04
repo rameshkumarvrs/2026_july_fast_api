@@ -15,7 +15,7 @@
             <small class="text-body-secondary">{{ post.name }}</small>
           </div>
           <h2>
-            <a class="article-title" href="#">{{ post.name }}</a>
+            <a class="article-title" href="{{url_for('get_post', id=post.id)}}">{{ post.title }}</a>
           </h2>
           <p class="article-content">{{ post.release_year }}</p>
         </div>
