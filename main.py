@@ -110,12 +110,14 @@ posts = [
     {
         "id" : 1,
         "name": "Secret of piviot bosss",
+        "title": "this book related to the stock market",
         "author": "franck ochava",
         "release year" : 1901
     },
     {
         "id" : 2,
         "name": "Secret of piviot bosss",
+        "title": "this book related to the stock market",
         "author": "franck ochava",
         "release_year" : 1901
         },
@@ -123,6 +125,7 @@ posts = [
     {
         "id" : 3,
         "name": "Eat the Frog",
+        "title": "this book related to the personal growth",
         "author": "Brain Tracy",
          "release_year" : 1958
         },
@@ -130,6 +133,7 @@ posts = [
     {
         "id" : 4,
         "name": "Inteligent Investors",
+        "title": "this book related to the personal growth",
         "author": "Jd avans",
         "release_year" : 1951
         },
@@ -137,6 +141,7 @@ posts = [
     {
         "id" : 5,
         "name": "Atomic habit",
+        "title": "this book related to the personal growth",
         "author": "Lousiana",
         "release_year" : 1985
         },
@@ -144,15 +149,23 @@ posts = [
     {
         "id" : 6,
         "name": "Think and grow rich",
+        "title": "this book related to the personal growth",
         "author": "Nepolean hill",
         "release_year" : 2001
         },                
 ]
 
 
-@app.get("/" )
-@app.get("/posts")
+@app.get("/", name="home")
+@app.get("/posts", name="posts")
 def home(request: Request):
      return templates.TemplateResponse(request, "home.html", {"posts": posts, "title": "Home"},)
 
 
+@app.get("/posts/{id}", include_in_schema=False)
+def get_post(id: int, request: Request):
+     for post in posts:
+          if post.get("id") == id:
+               title = post['title'][:50]
+               return templates.TemplateResponse(request, "post.html", {"post": post, "title": title},)
+     raise HTTPException(status_code=404, detail="the post is not available")     
