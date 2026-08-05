@@ -5,6 +5,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
+from schemas import PostCreate, PostResponse
 
 app =FastAPI()
 
@@ -159,13 +160,36 @@ posts = [
 ]
 
 
+@app.get("/posts", response_model=PostResponse)
+def get_all_posts():
+     return posts
+
+
+@app.post(
+          "/posts",
+          response_model=PostResponse,
+          status_code=201,
+)
+def create_posts(post:PostCreate):
+     new_id = max(p["id"] for p in posts) + 1 if posts else 1
+     new_post = {
+          "id": new_id,
+          "author": post.author,
+          "title": post.title,
+          "content": post.content,
+          "date_posted": "April 28, 2026"
+     }
+     posts.append(new_post)
+     return new_post
+
+
 @app.get("/", name="home")
 @app.get("/posts", name="posts")
 def home(request: Request):
      return templates.TemplateResponse(request, "home.html", {"posts": posts, "title": "Home"},)
 
 
-@app.get("/posts/{id}", include_in_schema=False)
+@app.get("/posts/{id}", include_in_schema=False, response_model=PostResponse)
 def get_post(id: int, request: Request):
      for post in posts:
           if post.get("id") == id:
