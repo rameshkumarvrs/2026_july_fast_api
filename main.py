@@ -160,9 +160,10 @@ posts = [
 ]
 
 
-@app.get("/posts", response_model=PostResponse)
-def get_all_posts():
+@app.get("/allposts")
+def all_posts():
      return posts
+
 
 
 @app.post(
