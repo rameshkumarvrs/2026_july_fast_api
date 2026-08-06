@@ -107,7 +107,11 @@ def create_posts(post:PostCreate):
 
 @app.get("/", name="home")
 @app.get("/posts", name="posts")
-def home(request: Request):
+def home(request: Request, db: Annotated[Session, Depends(get_db)]):
+     result = db.execute(
+          select(models.Post)
+     )
+     posts = result.scalars().all()
      return templates.TemplateResponse(request, "home.html", {"posts": posts, "title": "Home"},)
 
 
@@ -141,6 +145,30 @@ def create_user(user: UserCreate, db: Annotated[Session, Depends(get_db)]):
     if existing_email:
          raise HTTPException(status_code=400, detail="User Email already exists")
 
+    new_user = models.User(
+         username= user.username,
+         email = user.email,
+    )
+
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+
+    return new_user
+
+
+@app.get("/api/users/{user_id}", response_model=UserResponse)
+def get_user(user_id:int, db: Annotated[Session, Depends(get_db)]):
+     result = db.execute(
+          select(models.User).where(models.User.id == user_id),
+     )
+
+     user = result.scalars().first()
+
+     if user:
+          return user
+
+     raise HTTPException(status_code=404, detail="User not found")
 
 
 
