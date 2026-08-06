@@ -5,7 +5,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
-from schemas import PostCreate, PostResponse
+from schemas import PostCreate, PostResponse, UserCreate, UserResponse
 from typing_extensions import Annotated
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -25,150 +25,57 @@ app.mount("/media", StaticFiles(directory="media"), name="media")
 templates = Jinja2Templates(directory="templates")
 
 
-# class manf(BaseModel):
-#     name : str
-#     year : int
 
 
-# class items(BaseModel):
-#     name : str = Field(min_length = 2, max_length = 100)
-#     price : float
-#     availablity : Optional[bool] = None 
-#     manufacturer : manf
 
-# app = FastAPI()
+# posts = [
+#     {
+#         "id" : 1,
+#         "name": "Secret of piviot bosss",
+#         "title": "this book related to the stock market",
+#         "author": "franck ochava",
+#         "release year" : 1901
+#     },
+#     {
+#         "id" : 2,
+#         "name": "Secret of piviot bosss",
+#         "title": "this book related to the stock market",
+#         "author": "franck ochava",
+#         "release_year" : 1901
+#         },
 
-# emp = [
-#     {"name": 'ramesh', "id": 101, 'place': "Namakkal"},
-#      {"name": 'Haran', "id": 102, 'place': "Newzeland"},
-#       {"name": 'Riya', "id": 103, 'place': "karur"}
+#     {
+#         "id" : 3,
+#         "name": "Eat the Frog",
+#         "title": "this book related to the personal growth",
+#         "author": "Brain Tracy",
+#          "release_year" : 1958
+#         },
+
+#     {
+#         "id" : 4,
+#         "name": "Inteligent Investors",
+#         "title": "this book related to the personal growth",
+#         "author": "Jd avans",
+#         "release_year" : 1951
+#         },
+
+#     {
+#         "id" : 5,
+#         "name": "Atomic habit",
+#         "title": "this book related to the personal growth",
+#         "author": "Lousiana",
+#         "release_year" : 1985
+#         },
+
+#     {
+#         "id" : 6,
+#         "name": "Think and grow rich",
+#         "title": "this book related to the personal growth",
+#         "author": "Nepolean hill",
+#         "release_year" : 2001
+#         },                
 # ]
-
-# @app.post("/items")
-# def create_items(data : items):
-#     return {"messges": "items added successfully", "data": data}
-
-
-# @app.get("/display")
-# def view():
-#     return "Hello Rameshkumar"
-
-# @app.get("/display/{id}")
-# def display_id(id: int):
-#     return {"message": id}
-
-# @app.get("/employee/{id}")
-# def get_emp(id:int):
-#     for e in emp:
-#         if e["id"] == id:
-#             return e
-
-# @app.get("/employee")
-# def get_emp_det(id:int):
-#     for e in emp:
-#         if e['id'] == id:
-#             return e
-
-
-# @app.post("/feedback/")
-# def get_feedback(name : str= Form(...), rating : int=Form(...), email: str = Form(...)):
-#     return {
-#         "status" : "form submited succesfully",
-#         "name": name,
-#         "email": email,
-#         "rating": rating
-
-#     }   
-
-
-# @app.post("/file_upload/")
-# async def get_file_details(file : UploadFile=File(...)):
-#     content = await file.read()
-#     try:
-#         text_p = content.decode("utf-8")[:200]
-#     except:
-#         text_p = "unable to read the content"
-
-#     return {
-#          "filename": file.filename,
-#          "content-type": file.content_type,
-#          "Text": text_p
-#      }  
-
-
-# couname = "admin"
-# copwd = "password"
-
-# sessions ={}
-
-# @app.post("/login")
-# def login(uname: str, pwd: str, res: Response):
-#     if couname == uname and copwd == pwd:
-#        sid = str(uuid.uuid4())
-#        sessions[sid] = {"username": uname}
-#        res.set_cookie(key="sid", value=sid, httponly=True)
-#        return {"msg": "login success", "sessions": sessions}
-
-#     else:
-#         raise HTTPException(status_code=404, detail= "Invalid credentials")
-
-
-# @app.get("/home/")
-# def home(sid :Optional[str]=Cookie(None)):
-#     if sid is None or sid not in sessions:
-#         raise HTTPException(status_code=401, detail="Not authenticated")
-
-#     return {"user":sessions[sid]} 
-
-
-posts = [
-    {
-        "id" : 1,
-        "name": "Secret of piviot bosss",
-        "title": "this book related to the stock market",
-        "author": "franck ochava",
-        "release year" : 1901
-    },
-    {
-        "id" : 2,
-        "name": "Secret of piviot bosss",
-        "title": "this book related to the stock market",
-        "author": "franck ochava",
-        "release_year" : 1901
-        },
-
-    {
-        "id" : 3,
-        "name": "Eat the Frog",
-        "title": "this book related to the personal growth",
-        "author": "Brain Tracy",
-         "release_year" : 1958
-        },
-
-    {
-        "id" : 4,
-        "name": "Inteligent Investors",
-        "title": "this book related to the personal growth",
-        "author": "Jd avans",
-        "release_year" : 1951
-        },
-
-    {
-        "id" : 5,
-        "name": "Atomic habit",
-        "title": "this book related to the personal growth",
-        "author": "Lousiana",
-        "release_year" : 1985
-        },
-
-    {
-        "id" : 6,
-        "name": "Think and grow rich",
-        "title": "this book related to the personal growth",
-        "author": "Nepolean hill",
-        "release_year" : 2001
-        },                
-]
 
 
 @app.get("/allposts")
@@ -195,6 +102,9 @@ def create_posts(post:PostCreate):
      return new_post
 
 
+
+
+
 @app.get("/", name="home")
 @app.get("/posts", name="posts")
 def home(request: Request):
@@ -208,6 +118,29 @@ def get_post(id: int, request: Request):
                title = post['title'][:50]
                return templates.TemplateResponse(request, "post.html", {"post": post, "title": title},)
      raise HTTPException(status_code=404, detail="the post is not available")   
+
+
+
+@app.post("/users",response_model=UserResponse, status_code=201,)
+def create_user(user: UserCreate, db: Annotated[Session, Depends(get_db)]):
+    result = db.execute(
+         select(models.User).where(models.User.username == user.username),
+    )
+    existing_user = result.scalars().first()
+
+    if existing_user:
+         raise HTTPException(status_code=400, detail="User name already exists",)
+
+
+    result = db.execute(
+         select(models.User).where(models.User.email == user.email),
+    )
+
+    existing_email = result.scalars().first()
+
+    if existing_email:
+         raise HTTPException(status_code=400, detail="User Email already exists")
+
 
 
 
