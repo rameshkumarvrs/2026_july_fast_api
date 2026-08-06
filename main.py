@@ -10,9 +10,17 @@ from typing import Annotated
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+import models
+from database import Base, engine, get_db
+
+Base.metadata.create_all(bind=engine)
+
+
 app =FastAPI()
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
+app.mount("/media", StaticFiles(directory="media"), name="media")
 
 templates = Jinja2Templates(directory="templates")
 
