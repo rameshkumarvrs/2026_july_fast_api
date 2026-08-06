@@ -6,7 +6,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from schemas import PostCreate, PostResponse
-from typing import Annotated
+from typing_extensions import Annotated
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 

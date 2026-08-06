@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import datetime, timezone
+from typing import List, Optional
 
 # from sqlalchemy import DateTime, ForeignKey, Integer, String, Text
 # from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -19,21 +20,21 @@ class User(Base):
     username: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
     email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(String(200), nullable=False)
-    image_file: Mapped[str | None] = mapped_column(
+    image_file: Mapped[Optional[str]] = mapped_column(
         String(200),
         nullable=True,
         default=None,
     )
 
-    posts: Mapped[list[Post]] = relationship(
+    posts: Mapped[List["Post"]] = relationship(
         back_populates="author",
         cascade="all, delete-orphan",
     )
 
-    reset_tokens: Mapped[list[PasswordResetToken]] = relationship(
-        back_populates="user",
-        cascade="all, delete-orphan",
-    )
+    # reset_tokens: Mapped[list[PasswordResetToken]] = relationship(
+    #     back_populates="user",
+    #     cascade="all, delete-orphan",
+    # )
 
     @property
     def image_path(self) -> str:
@@ -55,8 +56,8 @@ class Post(Base):
     )
     date_posted: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        default=lambda: datetime.now(UTC),
+        default=lambda: datetime.now(timezone.utc),
     )
     likes: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
 
-    author: Mapped[User] = relationship(back_populates="posts")
+    author: Mapped["User"] = relationship(back_populates="posts")
