@@ -1,0 +1,24 @@
+
+{
+
+    "posts": [
+    {
+      "id": 1,
+      "author":"Corey anderson",
+      "title": "Fast api learning way",
+      "content": "This framework is Really use full to learn and implememnt",
+      "date_posted": "April 20 2025"
+    },
+
+     {
+      "id": 2,
+      "author":"Kane williamsom",
+      "title": "Ruby on rails Dead now a days",
+      "content": "This framework is Really use full to learn and implememnt",
+      "date_posted": "May 20 2025"
+    },
+
+
+]
+
+}
