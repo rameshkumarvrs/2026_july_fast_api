@@ -25,8 +25,8 @@ posts = [
 ]
 
 
-@app.get("/",  include_in_schema=False)
-@app.get("/posts",  include_in_schema=False)
+@app.get("/",  include_in_schema=False, name="home")
+@app.get("/posts",  include_in_schema=False, name="posts")
 def home(request: Request):
     return templates.TemplateResponse(request, "home.html", {"posts": posts, "title": "Home"},)
 
@@ -34,3 +34,15 @@ def home(request: Request):
 @app.get("/api/posts")
 def get_posts():
     return posts
+
+
+#This code for get the single post
+
+@app.get("/api/posts/{post_id}")
+def get_post(post_id: int):
+    for post in posts:
+        if post.get("id") == post_id:
+            return post
+
+    return {"error": "post not found"}   
+
