@@ -53,7 +53,7 @@ def post_page(post_id: int, request: Request):
             return templates.TemplateResponse(request, "post.html", {"post": post, "title": title})
     raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="post not found")  
 
-
+# create a new user in the Database
 @app.post("/api/users", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 def create_user(user:UserCreate, db: Annotated[Session, Depends(get_db)]):
     result = db.execute(select(models.User).where(models.User.username == user.username),)
@@ -64,6 +64,34 @@ def create_user(user:UserCreate, db: Annotated[Session, Depends(get_db)]):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="username already exists",
         )
+
+
+    result = db.execute(select(models.User).where(models.User.email == user.email),)
+    existing_email = result.scalars().first()
+
+    if existing_email:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email already found"
+        )
+
+    new_user = models.User(
+        username= user.username,
+        email = user.email,
+    )
+
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+
+
+    return new_user
+
+# Get a single user from the Databse
+@app.get("/api/users/{user_id}", response_model=UserResponse)
+def get_user(user_id: int):
+
+
         
 
 
