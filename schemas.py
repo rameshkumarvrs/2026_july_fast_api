@@ -1,5 +1,7 @@
-from datetime import datetime
+# from datetime import datetime
+from datetime import datetime, timezone
 from pydantic import BaseModel, ConfigDict, Field, EmailStr
+from typing import Optional
 
 
 
@@ -15,7 +17,7 @@ class UserResponse(UserBase):
 
 
     id:int
-    image_file: str | None
+    image_file: Optional[str] = None
     image_path:str 
 
 class PostBase(BaseModel):

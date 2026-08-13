@@ -1,33 +1,42 @@
 from fastapi import FastAPI, Request, HTTPException,status
+from fastapi import Depends
 from fastapi.staticfiles import StaticFiles
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
-from schemas import PostCreate, PostResponse
+from schemas import PostCreate, PostResponse, UserCreate, UserResponse
 from typing import List
+from typing_extensions import Annotated
 
 from fastapi.templating import Jinja2Templates
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+import models
+from database import Base, engine, get_db
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/media", StaticFiles(directory="media"), name="media")
 templates = Jinja2Templates(directory="templates")
 
-posts = [
-    {
-        "id": 1,
-        "author": "Corey Anderson",
-        "title": "FastAPI learning way",
-        "content": "This framework is really useful to learn and implement",
-        "date_posted": "April 20 2025"
-    },
-    {
-        "id": 2,
-        "author": "Kane Williamson",
-        "title": "Ruby on Rails dead nowadays",
-        "content": "This framework is really useful to learn and implement",
-        "date_posted": "May 20 2025"
-    }
-]
+# posts = [
+#     {
+#         "id": 1,
+#         "author": "Corey Anderson",
+#         "title": "FastAPI learning way",
+#         "content": "This framework is really useful to learn and implement",
+#         "date_posted": "April 20 2025"
+#     },
+#     {
+#         "id": 2,
+#         "author": "Kane Williamson",
+#         "title": "Ruby on Rails dead nowadays",
+#         "content": "This framework is really useful to learn and implement",
+#         "date_posted": "May 20 2025"
+#     }
+# ]
 
 
 @app.get("/",  include_in_schema=False, name="home")
@@ -42,7 +51,19 @@ def post_page(post_id: int, request: Request):
         if post.get("id") == post_id:
             title = post['title'][:50]
             return templates.TemplateResponse(request, "post.html", {"post": post, "title": title})
-    raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="post not found")   
+    raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="post not found")  
+
+
+@app.post("/api/users", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+def create_user(user:UserCreate, db: Annotated[Session, Depends(get_db)]):
+    result = db.execute(select(models.User).where(models.User.username == user.username),)
+    existing_user = result.scalars().first()
+
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="username already exists",
+        )
         
 
 
@@ -51,23 +72,7 @@ def get_posts():
     return posts
 
 
-# ## Create Post
-# @app.post(
-#     "/api/posts",
-#     response_model=PostResponse,
-#     status_code=status.HTTP_201_CREATED,
-# )
-# def create_post(post: PostCreate):
-#     new_id = max(p["id"] for p in posts) + 1 if posts else 1
-#     new_post = {
-#         "id": new_id,
-#         "author": post.author,
-#         "title": post.title,
-#         "content": post.content,
-#         "date_posted": "April 23, 2025",
-#     }
-#     posts.append(new_post)
-#     return new_post
+
 
 
 
