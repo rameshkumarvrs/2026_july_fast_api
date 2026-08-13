@@ -126,7 +126,7 @@ def create_user(user:UserCreate, db: Annotated[Session, Depends(get_db)]):
 @app.get("/api/users/{user_id}", response_model=UserResponse)
 def get_user(user_id: int, db: Annotated[Session, Depends(get_db)]):
 
-    result = db.execute(select(models.User).where(models.Userid == user_id),)
+    result = db.execute(select(models.User).where(models.User.id == user_id),)
     user = result.scalars().first()
 
     if user:
@@ -158,7 +158,7 @@ def get_user_posts(user_id: int, db: Annotated[Session, Depends(get_db)]):
 
 
 ## get_posts
-@app.get("/api/posts", response_model=list[PostResponse])
+@app.get("/api/posts", response_model=List[PostResponse])
 def get_posts(db: Annotated[Session, Depends(get_db)]):
     result = db.execute(select(models.Post))
     posts = result.scalars().all()
@@ -198,15 +198,14 @@ def create_post(post: PostCreate, db: Annotated[Session, Depends(get_db)]):
     return new_post
 
 
-#This code for get the single post
-
+## get_post
 @app.get("/api/posts/{post_id}", response_model=PostResponse)
-def get_post(post_id: int):
-    for post in posts:
-        if post.get("id") == post_id:
-            return post
-
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No post available")
+def get_post(post_id: int, db: Annotated[Session, Depends(get_db)]):
+    result = db.execute(select(models.Post).where(models.Post.id == post_id))
+    post = result.scalars().first()
+    if post:
+        return post
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
 
 
 ## StarletteHTTPException Handler

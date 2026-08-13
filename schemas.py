@@ -6,7 +6,7 @@ from typing import Optional
 
 
 class UserBase(BaseModel):
-    username :str = Field(min_length=1, max_digits=100)
+    username :str = Field(min_length=1, max_length=100)
     email :EmailStr = Field(max_length=120)
 
 class UserCreate(UserBase):
