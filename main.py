@@ -237,6 +237,29 @@ def update_post_full(post_id: int, db: Annotated[Session, Depends(get_db)], post
     return post    
 
 
+
+# patch post update
+
+@app.patch("/api/posts/{post_id}", response_model=PostResponse)
+def update_post_partial(post_id: int, db: Annotated[Session, Depends(get_db)], post_data: PostUpdate):
+    result = db.execute(select(models.Post).where(models.Post.id == post_id),)
+    post = result.scalars().first()
+    if not post:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail= "No post available",
+            )
+
+    update_data = post_data.model_dump(exclude_unset=True)
+    for field, value in update_data.items():
+        setattr(post, field, value)
+
+
+    db.commit()
+    db.refresh(post)
+    return post    
+
+
 ## StarletteHTTPException Handler
 @app.exception_handler(StarletteHTTPException)
 def general_http_exception_handler(request: Request, exception: StarletteHTTPException):
