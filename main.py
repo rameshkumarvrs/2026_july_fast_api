@@ -160,7 +160,7 @@ def get_user_posts(user_id: int, db: Annotated[Session, Depends(get_db)]):
 
 # user update using Patch
 
-@app.patch("/api/posts/{user_id}", response_model=UserUpdate)
+@app.patch("/api/users/{user_id}", response_model=UserUpdate)
 def update_user_partial(user_id: int, db: Annotated[Session, Depends(get_db)], user_update: UserUpdate):
     result = db.execute(select(models.User).where(models.User.id == user_id),)
     user = result.scalars().first()
