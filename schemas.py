@@ -20,6 +20,30 @@ class UserResponse(UserBase):
     image_file: Optional[str] = None
     image_path:str 
 
+class UserUpdate(BaseModel):
+    #username :str = Field(min_length=1, max_length=100)
+    #email :EmailStr = Field(max_length=120)
+
+    username: Optional[str] = Field(
+        default=None,
+        min_length=1,
+        max_length=100
+    )
+    
+    email: Optional[str] = Field(
+            default=None,
+            min_length=1,
+            max_length=100
+        )
+
+    image_file: Optional[str] = Field(
+                default=None,
+                min_length=1,
+                max_length=200
+            )    
+
+
+
 class PostBase(BaseModel):
     title: str = Field(min_length=1, max_length=100)
     content: str = Field(min_length=1)
