@@ -308,7 +308,7 @@ async def get_user_posts(user_id: int, db: Annotated[AsyncSession, Depends(get_d
 
 
 
-@app.patch("/api/users/{user_id}", response_model=UserResponse)
+@app.patch("/api/users/{user_id}", response_model=UserUpdate)
 async def update_user(
     user_id: int,
     user_update: UserUpdate,
