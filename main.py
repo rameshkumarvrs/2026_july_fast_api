@@ -25,7 +25,7 @@ async def lifespan(_app: FastAPI):
     yield
     # shutdown server 
     await engine.dispose()    
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 app.mount("/media", StaticFiles(directory="media"), name="media")
 templates = Jinja2Templates(directory="templates")
@@ -51,8 +51,8 @@ templates = Jinja2Templates(directory="templates")
 ## home
 @app.get("/", include_in_schema=False, name="home")
 @app.get("/posts", include_in_schema=False, name="posts")
-def home(request: Request, db: Annotated[Session, Depends(get_db)]):
-    result = db.execute(select(models.Post))
+async def home(request: Request, db: Annotated[AsyncSession, Depends(get_db)]):
+    result = await db.execute(select(models.Post).options(selectinload(models.Post.author))), 
     posts = result.scalars().all()
     return templates.TemplateResponse(
         request,
