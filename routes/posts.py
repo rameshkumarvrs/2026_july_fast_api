@@ -1,5 +1,6 @@
 ## Imports for Posts Router
-from typing import Annotated, List
+from typing import List
+from typing_extensions import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select

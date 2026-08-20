@@ -1,5 +1,6 @@
 ## Imports for Users Router
-from typing import Annotated
+#from typing import Annotated
+from typing_extensions import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
